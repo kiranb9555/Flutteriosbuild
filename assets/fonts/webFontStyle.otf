@@ -1,0 +1,13 @@
+@font-face { 
+    font-family: "myIPA"; 
+    src: url('IPA.TTF'); 
+}
+.phon, .unicode
+{
+    display: inline;    
+    font-family: 'myIPA', Verdana, sans-serif;  
+    font-size: 14pt;
+    font-weight: 500;
+    font-style:normal;
+    color: black;
+}

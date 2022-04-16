@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "323730157333",
+    "project_id": "counselinks-66e22",
+    "storage_bucket": "counselinks-66e22.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323730157333:android:594c669261b12a1191031c",
+        "android_client_info": {
+          "package_name": "com.counselink.counselink"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "323730157333-0lso8qnq100740f00ds45vcg4o6bn7kb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA303D5QVR8uaz6Zgx5EwKqWorpHSQ3rbQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "323730157333-0lso8qnq100740f00ds45vcg4o6bn7kb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
