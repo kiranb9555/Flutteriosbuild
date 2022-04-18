@@ -230,8 +230,6 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-
-
   _detailForm(String hintText, String labelText, double width,
       TextEditingController controller) {
     double fontSize = Util().getScreenHeight(context);
@@ -274,10 +272,6 @@ class _SignUpState extends State<SignUp> {
       return 'Please enter $labelText';
     }
   }
-
-
-
-
 
   _submitButton() {
     double fontSize = Util().getScreenHeight(context);

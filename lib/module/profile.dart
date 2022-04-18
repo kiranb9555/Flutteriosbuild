@@ -83,36 +83,42 @@ class _ProfileState extends State<Profile> {
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
 
-          body: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
-            // decoration: Util().boxDecoration(),
-            child: Container(
-              width: width,
-              child: Column(
-                children: [
-                  _getNameAndEmail(height, width),
-                  _getGenderAndDOB(height, width),
-                  _getAddress1(height, width),
-                  _getAddress2(height, width),
-                  _getStateCity(height, width),
-                  _getMobilePin(height, width),
-                  _geCategory(height, width),
+          body: _body(),
+        ),
+      ),
+    );
+  }
 
-                  // Text(userLoginData['responseObject'][0]['Name']),
-                  // Text(userLoginData['responseObject'][0]['EmailId']),
-                  // Text(userLoginData['responseObject'][0]['MobileNo1']),
-                  // Text(userLoginData['responseObject'][0]['DOB']),
-                  // Text(userLoginData['responseObject'][0]['AddressLine1']),
-                  // Text(userLoginData['responseObject'][0]['AddressLine2']),
-                  // Text(userLoginData['responseObject'][0]['State']),
-                  // Text(userLoginData['responseObject'][0]['City']),
-                  // Text(userLoginData['responseObject'][0]['Pincode']),
-                  // Text(userLoginData['responseObject'][0]['Gender']),
-                  // Text(userLoginData['responseObject'][0]['CounselingCategory']),
-                ],
-              ),
-            ),
-          ),
+  _body(){
+    double width = Util().getScreenWidth(context);
+    double height = Util().getScreenHeight(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
+      // decoration: Util().boxDecoration(),
+      child: Container(
+        width: width,
+        child: Column(
+          children: [
+            _getNameAndEmail(height, width),
+            _getGenderAndDOB(height, width),
+            _getAddress1(height, width),
+            _getAddress2(height, width),
+            _getStateCity(height, width),
+            _getMobilePin(height, width),
+            _geCategory(height, width),
+
+            // Text(userLoginData['responseObject'][0]['Name']),
+            // Text(userLoginData['responseObject'][0]['EmailId']),
+            // Text(userLoginData['responseObject'][0]['MobileNo1']),
+            // Text(userLoginData['responseObject'][0]['DOB']),
+            // Text(userLoginData['responseObject'][0]['AddressLine1']),
+            // Text(userLoginData['responseObject'][0]['AddressLine2']),
+            // Text(userLoginData['responseObject'][0]['State']),
+            // Text(userLoginData['responseObject'][0]['City']),
+            // Text(userLoginData['responseObject'][0]['Pincode']),
+            // Text(userLoginData['responseObject'][0]['Gender']),
+            // Text(userLoginData['responseObject'][0]['CounselingCategory']),
+          ],
         ),
       ),
     );

@@ -76,6 +76,10 @@ class Constant {
   /*
   * {"objReqValidateAndGenrateOTP":{"CompanyCode":"","UserId":"35","OTP": "9751","Password":"1234"}}
   * */
+  static const String API_CHANGE_PASSWORD = "ChangePasswordOutsideUser";
+  /*
+  * {"objReqOutsideLogin":{"OldPassword":"1234","Password":"123456","UserId":1}}
+  * */
 
   static const String API_APP_VERSION = "GetDeleteVersionDetail";
   /*

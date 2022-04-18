@@ -33,8 +33,10 @@ class OtpVerification extends StatefulWidget {
 
 class _OtpVerificationState extends State<OtpVerification> {
   TextEditingController otpController = TextEditingController();
+  TextEditingController userNameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool isVerifyingOTP = false;
+  bool isOTPSent = false;
   dynamic userLoginData;
 
   @override
@@ -64,29 +66,34 @@ class _OtpVerificationState extends State<OtpVerification> {
   }
 
   _body(height, fontSize) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      decoration: Util().boxDecoration(),
-      child: Container(
-        alignment: Alignment.center,
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _detailForm("Enter OTP...", "OTP", otpController),
-                SizedBox(
-                  height: height * 0.06,
+    return Stack(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          decoration: Util().boxDecoration(),
+          child: Container(
+            alignment: Alignment.center,
+            child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _detailForm("Enter OTP...", "OTP", otpController),
+                    SizedBox(
+                      height: height * 0.06,
+                    ),
+                    !isVerifyingOTP ? _submitButton() : Util().loadIndicator(),
+                    _resendOTP(fontSize),
+                  ],
                 ),
-                !isVerifyingOTP ? _submitButton() : Util().loadIndicator(),
-                _resendOTP(fontSize),
-              ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+        isOTPSent ? Util().loadIndicator() : Container()
+      ],
+    ) ;
   }
 
   _detailForm(
@@ -149,18 +156,10 @@ class _OtpVerificationState extends State<OtpVerification> {
   _resendOTP(fontSize) {
     return InkWell(
         onTap: () async {
-          // await SharedPrefData.removeEmail(SharedPrefData.userEmailKey);
-          // await SharedPrefData.setUserLoggedIn(true);
-          // await SharedPrefData.setDisplayDashboard(false);
-          // await SharedPrefData.setWebsiteDetail(false);
-          // await GoogleSignIn().disconnect();
-          // FirebaseAuth.instance.signOut();
-          // Navigator.pushReplacement(
-          //   context,
-          //   SlideRightRoute(
-          //     page: SignIn(),
-          //   ),
-          // );
+          setState(() {
+            isOTPSent = !isOTPSent;
+          });
+          _getOtp();
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -258,30 +257,32 @@ class _OtpVerificationState extends State<OtpVerification> {
     });
   }
 
-  _resendOtp(){
-    Map<String, dynamic> otpMap = {
+  _getOtp() async {
+    Map<String, dynamic> passMap = {
       "objReqValidateAndGenrateOTP":{
         "CompanyCode":"",
-        "UserName":"lucky1@gmail.com"
+        "UserName":userNameController.text
       }
     };
-    print("otpMap124");
-    print(otpMap);
+
+    print("userMap");
+    print(passMap);
     ServiceCall()
-        .apiCall(context,
-        Constant.API_BASE_URL + Constant.API_VALIDATE_GENERATE_OTP, otpMap)
+        .apiCall(context, Constant.API_BASE_URL + Constant.API_VALIDATE_GENERATE_OTP,
+        passMap)
         .then((value) async {
-      print("value12324");
+      print("value1324");
       print(value);
       if (value["responseCode"] == "1") {
-
+        Util().displayToastMsg(value["responseMessage"]);
         setState(() {
-          isVerifyingOTP = !isVerifyingOTP;
+          isOTPSent = !isOTPSent;
         });
+
       } else if (value["responseCode"] == "0") {
         Util().displayToastMsg(value["responseMessage"]);
         setState(() {
-          isVerifyingOTP = !isVerifyingOTP;
+          isOTPSent = !isOTPSent;
         });
       }
     });

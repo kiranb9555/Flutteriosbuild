@@ -80,7 +80,7 @@ class Util {
                 page: Home(),
               ),
             );
-          } else if (title == "Profile" || title == "Chat History") {
+          } else if (title == "Profile" || title == "Chat History" || title == "Change Password") {
             Navigator.pushReplacement(
               context,
               SlideLeftRoute(

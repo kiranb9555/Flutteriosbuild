@@ -4,6 +4,7 @@ import 'package:Counselinks/core/constant.dart';
 import 'package:Counselinks/core/service_call.dart';
 import 'package:Counselinks/model/user_login_response.dart';
 import 'package:Counselinks/module/change_password.dart';
+import 'package:Counselinks/module/forget_password.dart';
 import 'package:Counselinks/module/home.dart';
 import 'package:Counselinks/module/otp_verification.dart';
 import 'package:Counselinks/module/school_login.dart';
@@ -53,7 +54,7 @@ class _SignInState extends State<SignIn> {
     setState(() {
       machineIdController.text = token.toString();
       print("machine Id");
-      print(machineIdController.text);
+      print(machineIdController.text.length);
     });
   }
 
@@ -340,7 +341,7 @@ class _SignInState extends State<SignIn> {
           Navigator.pushReplacement(
             context,
             SlideLeftRoute(
-              page: ChangePassword(),
+              page: ForgetPassword(),
             ),
           );
         },
