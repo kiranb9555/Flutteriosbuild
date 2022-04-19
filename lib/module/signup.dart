@@ -373,7 +373,7 @@ class _SignUpState extends State<SignUp> {
             SlideRightRoute(
               page: OtpVerification(
                 userData: userData,
-                userEmail : email,
+                userName : email,
                 password : password,
                 machineId : machineId.toString(),
                 otp : otp,

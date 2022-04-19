@@ -1,3 +1,5 @@
+import 'package:Counselinks/module/package_list.dart';
+import 'package:Counselinks/module/status.dart';
 import 'package:Counselinks/shell/package_order_summary.dart';
 import 'package:Counselinks/shell/razor_pay_page.dart';
 import 'package:flutter/material.dart';
@@ -36,12 +38,12 @@ class _MoreState extends State<More> {
   }
 
   _getAccountStatus() async {
-    try{
+    try {
       isLoggedIn = (await SharedPrefData.getUserLoggedIn())!;
       setState(() {
         _isLoggedIn = isLoggedIn;
       });
-    }catch(e){
+    } catch (e) {
       print(e.toString());
     }
   }
@@ -109,6 +111,24 @@ class _MoreState extends State<More> {
           _isLoggedIn != null
               ? _isLoggedIn
                   ? _getCard(
+                      icon: Icons.sell_outlined, title: "Purchase Package")
+                  : Container()
+              : Container(),
+          const SizedBox(
+            height: 5.0,
+          ),
+          _isLoggedIn != null
+              ? _isLoggedIn
+                  ? _getCard(
+                      icon: Icons.local_activity_outlined, title: "Status")
+                  : Container()
+              : Container(),
+          const SizedBox(
+            height: 5.0,
+          ),
+          _isLoggedIn != null
+              ? _isLoggedIn
+                  ? _getCard(
                       icon: Icons.history_outlined, title: "Chat History")
                   : Container()
               : Container(),
@@ -154,43 +174,7 @@ class _MoreState extends State<More> {
     double height = Util().getScreenHeight(context);
     double fontSize = Util().getScreenHeight(context);
     return GestureDetector(
-      onTap: () {
-        if (title == "Home") {
-          Navigator.pushReplacement(context, SlideRightRoute(page: Home()));
-        } else if (title == "Profile") {
-          Navigator.pushReplacement(context, SlideRightRoute(page: Profile()));
-        } else if (title == "Chat History") {
-          Navigator.pushReplacement(
-              context, SlideRightRoute(page: ChatHistory()));
-        } else if (title == "Change Password") {
-          Navigator.pushReplacement(
-              context, SlideRightRoute(page: ChangePassword()));
-        } else if (title == "Rate Us") {
-          Util().displayToastMsg("Under Development");
-          // Navigator.pushReplacement(context, SlideRightRoute(page : Home()));
-        } else if (title == "Share") {
-          // Navigator.pushReplacement(
-          //   context,
-          //   SlideLeftRoute(
-          //     page: RazorpayPage(),
-          //   ),
-          // );
-          Util().displayToastMsg("Under Development");
-          // Navigator.pushReplacement(context, SlideRightRoute(page : Home()));
-        } else if (title == "Check Update") {
-          Util().displayToastMsg("Under Development");
-          // Navigator.pushReplacement(context, SlideRightRoute(page : Home()));
-        } else if (title == "Logout") {
-          return _logout();
-          // Navigator.pushReplacement(context, SlideRightRoute(page : Home()));
-        }
-
-        // else if (title == "Check Update") {
-        //   return _launchPlayStore();
-        // } else if (title == "Logout") {
-        //   return _logout();
-        // }
-      },
+      onTap: () => _pageHandler(title),
       child: Card(
         margin: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
         color: const Color(0xFF91d0cc).withOpacity(1.0),
@@ -242,6 +226,49 @@ class _MoreState extends State<More> {
         ),
       ),
     );
+  }
+
+  _pageHandler(title){
+    if (title == "Home") {
+      Navigator.pushReplacement(context, SlideRightRoute(page: Home()));
+    } else if (title == "Profile") {
+      Navigator.pushReplacement(context, SlideRightRoute(page: Profile()));
+    } else if (title == "Purchase Package") {
+      Navigator.pushReplacement(
+          context, SlideRightRoute(page: PackageList()));
+    } else if (title == "Status") {
+      Navigator.pushReplacement(context, SlideRightRoute(page: Status()));
+    } else if (title == "Chat History") {
+      Navigator.pushReplacement(
+          context, SlideRightRoute(page: ChatHistory()));
+    } else if (title == "Change Password") {
+      Navigator.pushReplacement(
+          context, SlideRightRoute(page: ChangePassword()));
+    } else if (title == "Rate Us") {
+      Util().displayToastMsg("Under Development");
+      // Navigator.pushReplacement(context, SlideRightRoute(page : Home()));
+    } else if (title == "Share") {
+      // Navigator.pushReplacement(
+      //   context,
+      //   SlideLeftRoute(
+      //     page: RazorpayPage(),
+      //   ),
+      // );
+      Util().displayToastMsg("Under Development");
+      // Navigator.pushReplacement(context, SlideRightRoute(page : Home()));
+    } else if (title == "Check Update") {
+      Util().displayToastMsg("Under Development");
+      // Navigator.pushReplacement(context, SlideRightRoute(page : Home()));
+    } else if (title == "Logout") {
+      return _logout();
+      // Navigator.pushReplacement(context, SlideRightRoute(page : Home()));
+    }
+
+    // else if (title == "Check Update") {
+    //   return _launchPlayStore();
+    // } else if (title == "Logout") {
+    //   return _logout();
+    // }
   }
 
   _logout() async {

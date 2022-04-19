@@ -275,6 +275,7 @@ class _SignInState extends State<SignIn> {
       // print("value1324");
       // print(value);
       if (value["responseCode"] == "1") {
+        //TODO : change IsOTPVerified after completion of resend otp and timer
         if (value["responseObject"][0]["IsOTPVerified"] == 0) {
           print("not verified");
           UserLoginResponse userLoginResponse =
@@ -286,7 +287,7 @@ class _SignInState extends State<SignIn> {
             SlideRightRoute(
               page: OtpVerification(
                 userData: userData,
-                userEmail : userName,
+                userName : userName,
                 password : password,
                 machineId : machineId.toString(),
                 otp : otp

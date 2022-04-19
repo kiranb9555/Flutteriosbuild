@@ -255,7 +255,6 @@ class _ChatHistoryState extends State<ChatHistory> {
   _getChatHistory() async {
     Map<String, dynamic> chatMap = {
       "objRequestMyChat": {
-        // Todo : change user id, right now it is hard coded.
         "UserId": userLoginData['responseObject'][0]['UserId'],
         // "UserId": userLoginData['responseObject'][0]['UserId'],
         "AppAccessTypeId":
@@ -306,6 +305,10 @@ class _ChatHistoryState extends State<ChatHistory> {
                       status : chatResponse['responseObject'][index]['Status'].toString(),
                       userChatId : chatResponse['responseObject'][index]['UserChatId'].toString(),
                       userId : userLoginData['responseObject'][0]['UserId'].toString(),
+                      appAccessTypeId : userLoginData['responseObject'][0]['AppAccessTypeId'].toString(),
+                      fromDate : fromDateController.text.toString(),
+                      toDate : toDateController.text.toString(),
+                        index : index
                     ),
                   ),
                 );

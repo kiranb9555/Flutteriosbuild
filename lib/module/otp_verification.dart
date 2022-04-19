@@ -6,6 +6,9 @@ import 'package:Counselinks/core/util.dart';
 import 'package:Counselinks/shared/slide_left_route.dart';
 import 'package:flutter/material.dart';
 
+import 'package:timer_count_down/timer_controller.dart';
+import 'package:timer_count_down/timer_count_down.dart';
+
 import '../database/shared_pred_data.dart';
 import '../shared/slide_right_route.dart';
 import 'home.dart';
@@ -13,7 +16,7 @@ import 'signin.dart';
 
 class OtpVerification extends StatefulWidget {
   final String userData;
-  final String userEmail;
+  final String userName;
   final String password;
   final String machineId;
   final String otp;
@@ -21,7 +24,7 @@ class OtpVerification extends StatefulWidget {
   const OtpVerification({
     Key? key,
     required this.userData,
-    required this.userEmail,
+    required this.userName,
     required this.password,
     required this.machineId,
     required this.otp,
@@ -34,10 +37,18 @@ class OtpVerification extends StatefulWidget {
 class _OtpVerificationState extends State<OtpVerification> {
   TextEditingController otpController = TextEditingController();
   TextEditingController userNameController = TextEditingController();
+  CountdownController _controller = CountdownController(autoStart: true);
+
   final _formKey = GlobalKey<FormState>();
   bool isVerifyingOTP = false;
   bool isOTPSent = false;
   dynamic userLoginData;
+  String resendOtp = "";
+  bool isTimerEnded = true;
+  bool isTimerStarted = false;
+  int duration =  1;
+  int minute1 = 0;
+  int second1 = 0;
 
   @override
   void initState() {
@@ -84,7 +95,7 @@ class _OtpVerificationState extends State<OtpVerification> {
                       height: height * 0.06,
                     ),
                     !isVerifyingOTP ? _submitButton() : Util().loadIndicator(),
-                    _resendOTP(fontSize),
+                    _resendOTP(fontSize)
                   ],
                 ),
               ),
@@ -93,7 +104,7 @@ class _OtpVerificationState extends State<OtpVerification> {
         ),
         isOTPSent ? Util().loadIndicator() : Container()
       ],
-    ) ;
+    );
   }
 
   _detailForm(
@@ -156,21 +167,105 @@ class _OtpVerificationState extends State<OtpVerification> {
   _resendOTP(fontSize) {
     return InkWell(
         onTap: () async {
+
+          !isTimerEnded ? _getOtp() : Util().displayToastMsg("Resend Otp after sometimes.");
           setState(() {
-            isOTPSent = !isOTPSent;
+            !isTimerEnded ? isOTPSent = !isOTPSent : isOTPSent;
           });
-          _getOtp();
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Util().getTextWithStyle(
-                title: "Resend OTP",
-                color: Colors.grey.shade900,
-                fontSize: fontSize * 0.018,
-                fontWeight: FontWeight.w500),
+            // _otpTimer(fontSize)
+            !isTimerEnded ? Util().getTextWithStyle(
+              title: "Resend OTP",
+              color: Colors.grey.shade900,
+              fontSize: fontSize * 0.018,
+              fontWeight: FontWeight.w500,
+            ) : Container(),
+
+            isTimerEnded ? Countdown(
+              controller: _controller,
+              seconds: 120,
+              build: (_, double time) =>
+                Util().getTextWithStyle(
+                  title:  "Resend OTP (${time.toString()} s)",
+                  color: Colors.grey.shade900,
+                  fontSize: fontSize * 0.018,
+                  fontWeight: FontWeight.w500,
+                ),
+              interval: const Duration(milliseconds: 100),
+              onFinished: () {
+                setState(() {
+                  isTimerEnded = !isTimerEnded;
+                });
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //   SnackBar(
+                //     content: Text('Timer is done!'),
+                //   ),
+                // );
+              },
+            ) : Container(),
           ],
         ));
+  }
+
+  _otpTimer(fontSize) {
+    return isTimerEnded ? TweenAnimationBuilder<Duration>(
+        duration: Duration(minutes: 1),
+        tween: Tween(begin: Duration(minutes: duration), end: Duration.zero),
+        onEnd: () {
+          print('Timer ended');
+         setState(() {
+           isTimerEnded = ! isTimerEnded;
+         });
+        },
+        builder: (BuildContext context, Duration value, Widget? child) {
+          final minutes = value.inMinutes;
+          final seconds = value.inSeconds % 60;
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: isTimerEnded ? Util().getTextWithStyle(
+              title: "Resend OTP ($minutes:$seconds)",
+              color: Colors.grey.shade900,
+              fontSize: fontSize * 0.018,
+              fontWeight: FontWeight.w500,
+            ) : Util().getTextWithStyle(
+              title: "Resend OTP",
+              color: Colors.grey.shade900,
+              fontSize: fontSize * 0.018,
+              fontWeight: FontWeight.w500,
+            ),
+          );
+        },
+    ) :
+    TweenAnimationBuilder<Duration>(
+        duration: Duration(minutes: 2),
+        tween: Tween(begin: Duration(minutes: duration), end: Duration.zero),
+        onEnd: () {
+          print('Timer ended');
+          setState(() {
+            isTimerEnded = ! isTimerEnded;
+          });
+        },
+        builder: (BuildContext context, Duration value, Widget? child) {
+          final minutes = value.inMinutes;
+          final seconds = value.inSeconds % 60;
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: isTimerEnded ? Util().getTextWithStyle(
+              title: "Resend OTP ($minutes:$seconds)",
+              color: Colors.grey.shade900,
+              fontSize: fontSize * 0.018,
+              fontWeight: FontWeight.w500,
+            ) : Util().getTextWithStyle(
+              title: "Resend OTP",
+              color: Colors.grey.shade900,
+              fontSize: fontSize * 0.018,
+              fontWeight: FontWeight.w500,
+            ),
+          );
+        });
   }
 
   _submitButton() {
@@ -190,25 +285,23 @@ class _OtpVerificationState extends State<OtpVerification> {
         FocusManager.instance.primaryFocus?.unfocus();
         // String email = await SharedPrefData.getUserEmail();
         if (_formKey.currentState!.validate()) {
-
-
           print("otp2222");
           print(otpController.text);
           print(widget.otp);
 
-          if(otpController.text == widget.otp.toString()){
+          if (otpController.text == widget.otp.toString() ||
+              otpController.text == resendOtp) {
             // Util().displayToastMsg("Otp is 8521642377correct");
             setState(() {
               isVerifyingOTP = !isVerifyingOTP;
             });
             _verifyOtp(otpController.text);
-          }else{
+          } else {
             Util().displayToastMsg("Otp is incorrect");
             // setState(() {
             //   isVerifyingOTP = !isVerifyingOTP;
             // });
           }
-
         }
       },
     );
@@ -233,7 +326,7 @@ class _OtpVerificationState extends State<OtpVerification> {
         Util().displayToastMsg(value["responseMessage"]);
 
         SharedPrefData.setUserLoggedIn(true);
-        SharedPrefData.setUserEmail(widget.userEmail);
+        SharedPrefData.setUserEmail(widget.userName);
         SharedPrefData.setUserPassword(widget.password);
         SharedPrefData.setMachineID(widget.machineId);
         Util().displayToastMsg(value["responseMessage"]);
@@ -259,26 +352,32 @@ class _OtpVerificationState extends State<OtpVerification> {
 
   _getOtp() async {
     Map<String, dynamic> passMap = {
-      "objReqValidateAndGenrateOTP":{
-        "CompanyCode":"",
-        "UserName":userNameController.text
+      "objReqValidateAndGenrateOTP": {
+        "CompanyCode": "",
+        "UserName": widget.userName.toString()
       }
     };
 
     print("userMap");
     print(passMap);
     ServiceCall()
-        .apiCall(context, Constant.API_BASE_URL + Constant.API_VALIDATE_GENERATE_OTP,
-        passMap)
+        .apiCall(context,
+            Constant.API_BASE_URL + Constant.API_VALIDATE_GENERATE_OTP, passMap)
         .then((value) async {
       print("value1324");
       print(value);
       if (value["responseCode"] == "1") {
         Util().displayToastMsg(value["responseMessage"]);
         setState(() {
+          if (resendOtp.isNotEmpty) {
+            resendOtp = "";
+          }
+          resendOtp = value["responseObject"][0]["OTP"].toString();
           isOTPSent = !isOTPSent;
-        });
+          _controller.onRestart;
+          isTimerEnded = ! isTimerEnded;
 
+        });
       } else if (value["responseCode"] == "0") {
         Util().displayToastMsg(value["responseMessage"]);
         setState(() {

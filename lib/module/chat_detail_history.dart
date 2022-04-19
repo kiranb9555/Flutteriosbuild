@@ -10,15 +10,29 @@ import '../shared/slide_left_route.dart';
 
 class ChatDetailHistory extends StatefulWidget {
   var chatQuestionList;
-  String status ;
-  String userChatId ;
-  String userId ;
+  String status;
+
+  String userChatId;
+
+  String userId;
+
+  String appAccessTypeId;
+
+  String fromDate;
+
+  String toDate;
+
+  int index;
 
   ChatDetailHistory({
     required this.chatQuestionList,
     required this.status,
     required this.userChatId,
     required this.userId,
+    required this.appAccessTypeId,
+    required this.fromDate,
+    required this.toDate,
+    required this.index,
   });
 
   @override
@@ -28,19 +42,25 @@ class ChatDetailHistory extends StatefulWidget {
 class _ChatDetailHistoryState extends State<ChatDetailHistory> {
   bool issShowing = false;
   TextEditingController txtController = TextEditingController();
+  var chatResponse;
+  var chatQuestionList;
+  bool isSearchingData = false;
+  bool isSending = false;
 
   @override
   void initState() {
     super.initState();
     _showTextBoxButton();
   }
-  _showTextBoxButton(){
-    if(widget.status =="5"){
+
+  _showTextBoxButton() {
+    if (widget.status == "5") {
       setState(() {
         issShowing = !issShowing;
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     double height = Util().getScreenHeight(context);
@@ -60,6 +80,25 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
         child: Scaffold(
           appBar: Util().getAppBar(context, "Chat Details", fontSize, height),
           backgroundColor: Colors.transparent,
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                isSending = !isSending;
+              });
+              _getChatHistory();
+            },
+            child: Icon(
+              Icons.refresh_outlined,
+              color: Colors.white,
+              size: 29,
+            ),
+            backgroundColor: Colors.teal,
+            tooltip: 'Update Profile',
+            elevation: 5,
+            splashColor: Colors.grey,
+          ),
+          // floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
+
           body: _body(),
         ),
       ),
@@ -67,14 +106,20 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
   }
 
   _body() {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _getChatList(context),
-          issShowing ? _txtBoxButton() : Container()
-        ],
-      ),
+    return Stack(
+      children: [
+        Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _getChatList(context),
+              _replyCloseButton(),
+              // issShowing ? _txtBoxButton() : Container()
+            ],
+          ),
+        ),
+        isSending ? Util().loadIndicator() : Container()
+      ],
     );
   }
 
@@ -82,14 +127,18 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
     return Container(
       child: Expanded(
         child: ListView.builder(
-          scrollDirection: Axis.vertical,
+            scrollDirection: Axis.vertical,
             shrinkWrap: true,
             itemCount: widget.chatQuestionList.length,
             itemBuilder: (BuildContext context, int index) {
               return ListTile(
                 title: Card(
                     margin: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
-                    color:  widget.chatQuestionList[index]['AnswerType'].toString() != "2" ? const Color(0xFF91d0cc) : Colors.white60,
+                    color: widget.chatQuestionList[index]['AnswerType']
+                        .toString() !=
+                        "2"
+                        ? const Color(0xFF91d0cc)
+                        : Colors.white60,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
@@ -97,7 +146,8 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
                     child: _chatListWidget(
                         widget.chatQuestionList[index]['Answer'].toString(),
                         widget.chatQuestionList[index]['Question'].toString(),
-                        widget.chatQuestionList[index]['AnswerTypeName'].toString(),
+                        widget.chatQuestionList[index]['AnswerTypeName']
+                            .toString(),
                         widget.chatQuestionList[index]['AnswerType'].toString(),
                         index)),
               );
@@ -109,7 +159,7 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
     * */
   }
 
-  _chatListWidget(answer, question, answerTypeName,answerType, index) {
+  _chatListWidget(answer, question, answerTypeName, answerType, index) {
     double height = Util().getScreenHeight(context);
     double width = Util().getScreenWidth(context);
     return Container(
@@ -132,7 +182,9 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
                 children: [
                   Util().getTextWithStyle1(
                       title: answerTypeName.toString(),
-                      color: answerType == "2" ? Colors.blue.shade900 :Colors.blue.shade600,
+                      color: answerType == "2"
+                          ? Colors.blue.shade900
+                          : Colors.blue.shade600,
                       fontSize: height * 0.022,
                       fontWeight: FontWeight.bold),
                   SizedBox(
@@ -182,26 +234,69 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
     );
   }
 
-  _txtBoxButton(){
-      return Container(
-        margin: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 5.0),
+  _txtBoxButton() {
+    return Container(
+      padding: const EdgeInsets.only(left: 2.0, right: 2.0, bottom: 2.0),
+      // margin: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 5.0),
+      color: const Color(0xFF91d0cc).withOpacity(1.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _closeDialog(),
+          _chatBox(),
+          _sendButton(),
+        ],
+      ),
+    );
+  }
+
+  _closeDialog() {
+    double width = Util().getScreenHeight(context);
+    double height = Util().getScreenHeight(context);
+    double fontSize = Util().getScreenHeight(context);
+    return Card(
+      margin: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+      color: const Color(0xFF91d0cc).withOpacity(1.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      elevation: 1.0,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+        height: height / 20,
+        width: width,
+        color: Colors.white38,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _chatBox(),
-            _sendButton()
+            Util().getTextWithStyle1(
+              title: "User Reply",
+              color: Colors.blueGrey.shade900,
+              fontSize: fontSize * 0.025,
+              fontWeight: FontWeight.w200,
+            ),
+            InkWell(
+              onTap: () => Navigator.pop(context),
+              child: Icon(
+                Icons.close,
+                color: Colors.blueGrey.shade800,
+                size: height * 0.04,
+              ),
+            ),
           ],
         ),
-      );
+      ),
+    );
   }
 
   _chatBox() {
     double fontSize = Util().getScreenHeight(context);
-    double width = Util().getScreenWidth(context)*0.75;
+    double width = Util().getScreenWidth(context) * 0.75;
     return Container(
       width: width,
       child: TextField(
-        maxLines: 2,
+        maxLines: 4,
         controller: txtController,
         cursorColor: Colors.blueGrey.shade900,
         cursorHeight: 20.0,
@@ -210,10 +305,8 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
           fontSize: fontSize * 0.022,
         ),
         decoration: InputDecoration(
-
           filled: true,
           fillColor: Colors.blueGrey.shade50,
-
           border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(4)),
               borderSide: BorderSide(
@@ -224,10 +317,94 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
     );
   }
 
+  _replyCloseButton() {
+    return Container(
+      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          issShowing ? _replyButton() : Container(),
+          SizedBox(
+            width: 10.0,
+          ),
+          _closeChatButton()
+        ],
+      ),
+    );
+  }
+
+  _replyButton() {
+    double fontSize = Util().getScreenHeight(context);
+    return ElevatedButton(
+      child: Util().getTextWithStyle1(
+        title: "Reply",
+        color: Colors.blueGrey.shade900,
+        fontSize: fontSize * 0.03,
+        fontWeight: FontWeight.w600,
+      ),
+      style: Util().buttonStyle(
+        foregroundColor: Colors.transparent,
+        backgroundColor: Colors.greenAccent.shade200,
+        borderColor: Colors.greenAccent.shade200,
+        borderRadius: 5.0,
+      ),
+      onPressed: () => _replyDialogWidget(),
+    );
+  }
+
+  _closeChatButton() {
+    double fontSize = Util().getScreenHeight(context);
+    return ElevatedButton(
+      child: Util().getTextWithStyle1(
+          title: "Close Chat",
+          color: Colors.white60,
+          fontSize: fontSize * 0.025,
+          fontWeight: FontWeight.w200),
+      style: Util().buttonStyle(
+        foregroundColor: Colors.transparent,
+        backgroundColor: Colors.deepOrange.shade600,
+        borderColor: Colors.deepOrange.shade600,
+        borderRadius: 5.0,
+      ),
+      onPressed: () async {
+        setState(() {
+          isSending = !isSending;
+        });
+        _closeChatApiCall();
+      },
+    );
+  }
+
+  _replyDialogWidget() {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return _openDialog();
+      },
+    );
+  }
+
+  _openDialog() {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(Constant.padding),
+      ),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      child: _txtBoxButton(),
+    );
+  }
+
   _sendButton() {
     double fontSize = Util().getScreenHeight(context);
     return ElevatedButton(
-      child: const Icon(Icons.send , color: Colors.blueGrey, size: 50.0,),
+      child: Util().getTextWithStyle1(
+        title: "Reply",
+        color: Colors.blueGrey.shade900,
+        fontSize: fontSize * 0.03,
+        fontWeight: FontWeight.w600,
+      ),
       style: Util().buttonStyle(
           foregroundColor: const Color(0xFF91d0cc).withOpacity(0.9),
           backgroundColor: const Color(0xFF91d0cc).withOpacity(0.9),
@@ -235,9 +412,14 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
           borderRadius: 8.0),
       onPressed: () async {
         FocusManager.instance.primaryFocus?.unfocus();
-        if(txtController.text.trim().isNotEmpty){
+        if (txtController.text
+            .trim()
+            .isNotEmpty) {
+          setState(() {
+            isSending = !isSending;
+          });
           _sendChat();
-        }else{
+        } else {
           Util().displayToastMsg("Type Something ...");
         }
       },
@@ -246,24 +428,26 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
 
   _sendChat() async {
     Map<String, dynamic> chatResponseMap = {
-      "objRequestReplyQueryChatDetail":{
-        "UserChatDetailId":"0",
+      "objRequestReplyQueryChatDetail": {
+        "UserChatDetailId": "0",
         "Answer": txtController.text.trim(),
         "UserChatId": widget.userChatId,
-        "UserId":widget.userId
+        "UserId": widget.userId
       }
     };
 
     print("chatMap");
     print(chatResponseMap);
     ServiceCall()
-        .apiCall(
-        context, Constant.API_BASE_URL + Constant.API_REPLY_BY_USER, chatResponseMap)
+        .apiCall(context, Constant.API_BASE_URL + Constant.API_REPLY_BY_USER,
+        chatResponseMap)
         .then((response) async {
       if (response["responseCode"] == "1") {
         Util().displayToastMsg(response["responseMessage"]);
         setState(() {
+          _getChatHistory();
           issShowing = !issShowing;
+          Navigator.pop(context);
         });
         // setState(() {
         //   chatResponse = response;
@@ -274,10 +458,93 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
         //   });
         // });
       } else if (response["responseCode"] == "0") {
+        setState(() {
+          isSending = !isSending;
+        });
         Util().displayToastMsg(response["responseMessage"]);
+
         // setState(() {
         //   isSearchingData = !isSearchingData;
         // });
+      }
+    });
+  }
+
+  _getChatHistory() async {
+    Map<String, dynamic> chatMap = {
+      "objRequestMyChat": {
+        "UserId": widget.userId,
+        // "UserId": userLoginData['responseObject'][0]['UserId'],
+        "AppAccessTypeId": widget.appAccessTypeId,
+        "FromDate": widget.fromDate,
+        "ToDate": widget.toDate
+      }
+    };
+
+    print("chatMap");
+    print(chatMap);
+    ServiceCall()
+        .apiCall(
+        context, Constant.API_BASE_URL + Constant.API_GET_ALL_CHAT, chatMap)
+        .then((response) async {
+      print("chatResponse");
+      print(response);
+      if (response["responseCode"] == "1") {
+        print("chatResponse");
+        print(response);
+        setState(() {
+          widget.chatQuestionList = "";
+          chatResponse = response;
+          widget.chatQuestionList =
+          chatResponse['responseObject'][widget.index]['ChatQuestionList'];
+          print("chatResponse");
+          print(chatResponse);
+
+
+          isSending = !isSending;
+          setState(() {
+            isSearchingData = !isSearchingData;
+          });
+        });
+      } else if (response["responseCode"] == "0") {
+        Util().displayToastMsg(response["responseMessage"]);
+        setState(() {
+          isSearchingData = !isSearchingData;
+        });
+      }
+    });
+  }
+
+  _closeChatApiCall() {
+    Map<String, dynamic> chatMap = {
+      "objRequestPackageMaster": {
+        "Action": "CHANGESTATUS",
+        "Key": "sss",
+        "MachineId": "",
+        "Status": int.parse(widget.status.toString()),
+        "UserChatId": int.parse(widget.userChatId),
+      }
+    };
+
+    print("chatMap");
+    print(chatMap);
+    ServiceCall()
+        .apiCall(
+        context, Constant.API_BASE_URL + Constant.API_CLOSE_CHAT, chatMap)
+        .then((response) async {
+      print("chatResponse");
+      print(response);
+      if (response["responseCode"] == "1") {
+        print("chatResponse");
+        print(response);
+        setState(() {
+          isSending = !isSending;
+        });
+      } else if (response["responseCode"] == "0") {
+        Util().displayToastMsg(response["responseMessage"]);
+        setState(() {
+          isSending = !isSending;
+        });
       }
     });
   }

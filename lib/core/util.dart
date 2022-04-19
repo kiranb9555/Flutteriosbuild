@@ -80,7 +80,10 @@ class Util {
                 page: Home(),
               ),
             );
-          } else if (title == "Profile" || title == "Chat History" || title == "Change Password") {
+          } else if (title == "Profile" ||
+              title == "Chat History" ||
+              title == "Status" ||
+              title == "Change Password") {
             Navigator.pushReplacement(
               context,
               SlideLeftRoute(
@@ -94,15 +97,14 @@ class Util {
                 page: ChatHistory(),
               ),
             );
-          }
-          else if (title == "Update Profile") {
+          } else if (title == "Update Profile") {
             Navigator.pushReplacement(
               context,
               SlideLeftRoute(
                 page: Profile(),
               ),
             );
-          }else if (title == "Order Summary") {
+          } else if (title == "Order Summary") {
             Navigator.pushReplacement(
               context,
               SlideLeftRoute(

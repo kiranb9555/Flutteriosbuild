@@ -48,7 +48,7 @@ dependencies:
 #  flutter_html: ^2.2.1
   date_time_picker: ^2.1.0
   cached_network_image: ^3.2.0
-
+  timer_count_down: ^2.2.1
   firebase_core: ^1.14.0
   firebase_messaging: ^11.2.12
   flutter_local_notifications: ^9.4.0

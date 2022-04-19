@@ -122,7 +122,7 @@ class _ChatState extends State<Chat> {
         print("chatUrl");
         print(chatUrl);
         return _isLangSelected ? WebPage(chatUrl) : Center(
-          child: Text("Please Select Langusge"),
+          child: Text("Please Select Language"),
         );
       }
       // if(profileUpdated == 0){
