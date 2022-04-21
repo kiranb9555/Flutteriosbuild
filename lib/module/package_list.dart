@@ -101,7 +101,7 @@ class _PackageListState extends State<PackageList> {
 
               )),
             );
-              Util().displayToastMsg("purchase package");
+              // Util().displayToastMsg("purchase package");
               // setState(() {
               //   isDownLoading = !isDownLoading;
               //   // _purchasePackageList(index);
@@ -246,7 +246,6 @@ class _PackageListState extends State<PackageList> {
       "objRequestPackageMaster": {
         "Action": "GETFORNEWPACKAGE",
         // "UserId": "1"
-        //TODO :Change UserId
         "UserId": userId
       }
     };

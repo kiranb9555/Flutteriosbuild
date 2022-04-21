@@ -230,6 +230,7 @@ class _PackageOrderSummaryState extends State<PackageOrderSummary> {
         borderRadius: 18.0,
       ),
       onPressed: () async {
+        // _alertDialogWidget("order_bsdchfbcsdb", "payment_bsdchfbcsdb");
         if(total != 0){
           _createCustomer();
           _createOrder();
@@ -238,7 +239,7 @@ class _PackageOrderSummaryState extends State<PackageOrderSummary> {
           });
         }else{
           _purchasePackageList("", "");
-          Util().displayToastMsg("Zero amount");
+          // Util().displayToastMsg("Zero amount");
           setState(() {
             isLoading = !isLoading;
           });
@@ -373,72 +374,64 @@ class _PackageOrderSummaryState extends State<PackageOrderSummary> {
     return Stack(
       children: <Widget>[
         Container(
-          padding: const EdgeInsets.only(bottom: 5.0, left: 2.0, right: 2.0),
+          height: height * 0.2,
+          width: width,
+          padding: const EdgeInsets.only(bottom: 5.0, left: 2.0, right: 2.0, top: 10.0),
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
-            color: const Color(0xFF91d0cc).withOpacity(0.8),
+            color: const Color(0xFF91d0cc),
             borderRadius: BorderRadius.circular(10.0),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Util().getTextWithStyle1(
                   title: title,
                   color: Colors.red.shade900,
                   fontSize: width * 0.055,
-                  fontWeight: FontWeight.w800),
-              SizedBox(
-                height: height * 0.01,
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
-                child: Util().getTextWithStyle1(
-                    title: description,
-                    color: Colors.blueGrey.shade800,
-                    fontSize: width * 0.05,
-                    fontWeight: FontWeight.w700),
-              ),
-              SizedBox(
-                height: height * 0.032,
+                  fontWeight: FontWeight.w500,
               ),
 
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  RaisedButton(
-                    color: Colors.teal.shade200,
-                    // padding: EdgeInsets.fromLTRB(70, 15, 70, 15),
-                    padding: EdgeInsets.only(
-                        left: width * 0.16,
-                        right: width * 0.16,
-                        bottom: 15,
-                        top: 15),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(10.0),
-                        bottomRight: Radius.circular(10.0),
-                        topLeft: Radius.circular(10.0),
-                        topRight: Radius.circular(10.0),
-                      ),
-                    ),
-                    child: Util().getTextWithStyle1(
-                        title: purchase.toUpperCase(),
-                        color: Colors.grey.shade900,
-                        fontSize: width * 0.055,
-                        fontWeight: FontWeight.w900),
+              Util().getTextWithStyle1(
+                title: description,
+                color: Colors.blueGrey.shade800,
+                fontSize: width * 0.05,
+                fontWeight: FontWeight.w500,
+              ),
 
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        SlideRightRoute(
-                          page: Home(),
-                        ),
-                      );
-                      // Navigator.pop(context, false);
-                    },
+
+              RaisedButton(
+                color: Colors.teal.shade200,
+                // padding: EdgeInsets.fromLTRB(70, 15, 70, 15),
+                padding: EdgeInsets.only(
+                    left: width * 0.1,
+                    right: width * 0.1,
+                    bottom: 12,
+                    top: 12),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(10.0),
+                    bottomRight: Radius.circular(10.0),
+                    topLeft: Radius.circular(10.0),
+                    topRight: Radius.circular(10.0),
                   ),
-                ],
+                ),
+                child: Util().getTextWithStyle1(
+                    title: purchase.toUpperCase(),
+                    color: Colors.grey.shade800,
+                    fontSize: width * 0.055,
+                    fontWeight: FontWeight.w500),
+
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    SlideRightRoute(
+                      page: Home(),
+                    ),
+                  );
+                  // Navigator.pop(context, false);
+                },
               ),
             ],
           ),
@@ -482,8 +475,6 @@ class _PackageOrderSummaryState extends State<PackageOrderSummary> {
       }
     });
   }
-
-
 
   _updateUserDetail(orderId, paymentId) async {
     Map<String, dynamic> userMap = {

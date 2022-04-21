@@ -82,7 +82,7 @@ class Constant {
   * */
   static const String API_CLOSE_CHAT = "GetQueryChatDetailOutsideUser";
   /*
-  * {"objRequestPackageMaster":{"Action": "CHANGESTATUS","Key": "sss","MachineId": "eq-4Bu-SRYKfmYMHhDoSwf:APA91bEBDFwXAVgKTwIwrBvdsm7iS-Y7ES6SZQnS5-KNcw37z0leGDsnn5tIsnBqj6BgiMrjt30yJ2JZLcTKOkPiPA_erhqNi-T6yY0Iy8Woe6SFv8isk17lmfbHoBY6k06C1LWbi0QF","Status": 3,"UserChatId": 3}}
+  * {"objRequestReplyQueryChat":{"Action": "CHANGESTATUS","Key": "sss","Status": 3,"UserChatId": 3}}
   * */
 
   static const String API_APP_VERSION = "GetDeleteVersionDetail";

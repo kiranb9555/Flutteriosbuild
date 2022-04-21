@@ -46,6 +46,7 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
   var chatQuestionList;
   bool isSearchingData = false;
   bool isSending = false;
+  bool isChatClosed = true;
 
   @override
   void initState() {
@@ -327,7 +328,7 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
           SizedBox(
             width: 10.0,
           ),
-          _closeChatButton()
+          // isChatClosed ? _closeChatButton() : Container()
         ],
       ),
     );
@@ -494,9 +495,12 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
         print(response);
         setState(() {
           widget.chatQuestionList = "";
+          widget.status = "";
           chatResponse = response;
           widget.chatQuestionList =
           chatResponse['responseObject'][widget.index]['ChatQuestionList'];
+          widget.status = chatResponse['responseObject'][widget.index]['Status'].toString();
+
           print("chatResponse");
           print(chatResponse);
 
@@ -517,10 +521,9 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
 
   _closeChatApiCall() {
     Map<String, dynamic> chatMap = {
-      "objRequestPackageMaster": {
+      "objRequestReplyQueryChat": {
         "Action": "CHANGESTATUS",
         "Key": "sss",
-        "MachineId": "",
         "Status": int.parse(widget.status.toString()),
         "UserChatId": int.parse(widget.userChatId),
       }
@@ -539,6 +542,7 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
         print(response);
         setState(() {
           isSending = !isSending;
+          isChatClosed = !isChatClosed;
         });
       } else if (response["responseCode"] == "0") {
         Util().displayToastMsg(response["responseMessage"]);
