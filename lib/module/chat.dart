@@ -100,7 +100,7 @@ class _ChatState extends State<Chat> {
         decoration: Util().boxDecoration(),
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          // appBar: Util().getAppBar(context, "Chat", fontSize, height),
+          appBar: Util().getAppBar(context, "Chat", fontSize, height),
           bottomNavigationBar: BottomNavigationWidget(1),
           body: _body(),
         ),
@@ -152,7 +152,7 @@ class _ChatState extends State<Chat> {
 
   _langAlertDialogWidget() {
     return showDialog(
-      barrierDismissible: false,
+      // barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return _openDialog();

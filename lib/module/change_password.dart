@@ -135,6 +135,7 @@ class _ChangePasswordState extends State<ChangePassword> {
     if (value == null && value.toString().isEmpty) {
       return 'Please enter $labelText';
     }
+    // return 'Please enter $labelText';
   }
 
   _submitButton() {
@@ -154,10 +155,18 @@ class _ChangePasswordState extends State<ChangePassword> {
         FocusManager.instance.primaryFocus?.unfocus();
         // String email = await SharedPrefData.getUserEmail();
         if (_formKey.currentState!.validate()) {
-          setState(() {
-            isUpdating = !isUpdating;
-          });
-          _changePassword();
+          print("oldPassController");
+          print(oldPassController.text.toString().trim());
+          print("newPassController");
+          print(newPassController.text.toString().trim());
+          if(oldPassController.text.toString().trim() != newPassController.text.toString().trim()){
+            setState(() {
+              isUpdating = !isUpdating;
+            });
+            _changePassword();
+          }else{
+            Util().displayToastMsg("New password must be different from old Password");
+          }
         }
       },
     );

@@ -1,5 +1,6 @@
 import 'package:Counselinks/module/package_list.dart';
 import 'package:Counselinks/module/status.dart';
+import 'package:Counselinks/module/transaction_history.dart';
 import 'package:Counselinks/shell/package_order_summary.dart';
 import 'package:Counselinks/shell/razor_pay_page.dart';
 import 'package:flutter/material.dart';
@@ -120,7 +121,8 @@ class _MoreState extends State<More> {
           _isLoggedIn != null
               ? _isLoggedIn
                   ? _getCard(
-                      icon: Icons.local_activity_outlined, title: "Status")
+                      // icon: Icons.local_activity_outlined, title: "Status")
+                      icon: Icons.money_outlined, title: "Transaction History")
                   : Container()
               : Container(),
           const SizedBox(
@@ -236,8 +238,8 @@ class _MoreState extends State<More> {
     } else if (title == "Purchase Package") {
       Navigator.pushReplacement(
           context, SlideRightRoute(page: PackageList()));
-    } else if (title == "Status") {
-      Navigator.pushReplacement(context, SlideRightRoute(page: Status()));
+    } else if (title == "Transaction History") {
+      Navigator.pushReplacement(context, SlideRightRoute(page: TransactionHistory()));
     } else if (title == "Chat History") {
       Navigator.pushReplacement(
           context, SlideRightRoute(page: ChatHistory()));

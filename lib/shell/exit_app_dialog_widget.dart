@@ -35,8 +35,8 @@ class _ExitAppDialogWidgetState extends State<ExitAppDialogWidget> {
   }
 
   contentBox(context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    double width = Util().getScreenWidth(context);
+    double height = Util().getScreenHeight(context);
     return Stack(
       children: <Widget>[
         Container(
@@ -53,18 +53,20 @@ class _ExitAppDialogWidgetState extends State<ExitAppDialogWidget> {
               Util().getTextWithStyle1(
                   title: widget.title,
                   color: Colors.blueGrey.shade700,
-                  fontSize: width * 0.057,
-                  fontWeight: FontWeight.w600),
+                  fontSize: width * 0.053,
+                  fontWeight: FontWeight.w600,
+              ),
               SizedBox(
                 height: height * 0.01,
               ),
               Container(
-                padding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
+                padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
                 child: Util().getTextWithStyle1(
                     title: widget.descriptions,
                     color: Colors.blueGrey.shade800,
-                    fontSize: width * 0.05,
-                    fontWeight: FontWeight.w500),
+                    fontSize: width * 0.045,
+                    fontWeight: FontWeight.w500,
+                ),
               ),
               SizedBox(
                 height: height * 0.032,
@@ -77,7 +79,7 @@ class _ExitAppDialogWidgetState extends State<ExitAppDialogWidget> {
                   RaisedButton(
                     color: Colors.teal.shade200,
                     // padding: EdgeInsets.fromLTRB(70, 15, 70, 15),
-                    padding: EdgeInsets.only(left: width * 0.16,right: width * 0.16, bottom: 15, top: 15),
+                    padding: EdgeInsets.only(left: width * 0.16,right: width * 0.16, bottom: 15, top: 15,),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(10.0),
@@ -86,31 +88,35 @@ class _ExitAppDialogWidgetState extends State<ExitAppDialogWidget> {
                     child: Util().getTextWithStyle1(
                         title: widget.no.toUpperCase(),
                         color: Colors.white70,
-                        fontSize: width * 0.055,
-                        fontWeight: FontWeight.w500),
+                        fontSize: width * 0.05,
+                        fontWeight: FontWeight.w500,
+                    ),
 
                     onPressed: () {
                       Navigator.pop(context, false);
                     },
                   ),
-                  RaisedButton(
-                    color: Colors.teal.shade100,
-                    // padding: EdgeInsets.fromLTRB(70, 15, 70, 15),
-                    padding: EdgeInsets.only(left: width * 0.16,right: width * 0.16, bottom: 15, top: 15),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        bottomRight: Radius.circular(10.0),
+                  Expanded(
+                    child: RaisedButton(
+                      color: Colors.teal.shade100,
+                      // padding: EdgeInsets.fromLTRB(70, 15, 70, 15),
+                      padding: EdgeInsets.only(left: width * 0.16,right: width * 0.15, bottom: 15, top: 15,),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(10.0),
+                        ),
                       ),
-                    ),
-                    child: Util().getTextWithStyle1(
-                        title: widget.yes.toUpperCase(),
-                        color: Colors.blueGrey.shade900,
-                        fontSize: width * 0.055,
-                        fontWeight: FontWeight.w500),
+                      child: Util().getTextWithStyle1(
+                          title: widget.yes.toUpperCase(),
+                          color: Colors.blueGrey.shade900,
+                          fontSize: width * 0.05,
+                          fontWeight: FontWeight.w500,
+                      ),
 
-                    onPressed: () {
-                      SystemNavigator.pop();
-                    },
+                      onPressed: () {
+                        SystemNavigator.pop();
+                      },
+                    ),
                   ),
                 ],
               ),

@@ -1,6 +1,8 @@
 import 'package:Counselinks/module/chat_history.dart';
 import 'package:Counselinks/module/home.dart';
 import 'package:Counselinks/module/package_list.dart';
+import 'package:Counselinks/module/transaction_detail.dart';
+import 'package:Counselinks/module/transaction_history.dart';
 import 'package:Counselinks/shell/exit_app_dialog_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -53,6 +55,23 @@ class Util {
     );
   }
 
+  getTextWithStyle2(
+      {required String title,
+      required Color color,
+      required double fontSize,
+      required FontWeight fontWeight}) {
+    return Text(
+      title,
+      // maxLines: 3,
+      style: GoogleFonts.aBeeZee(
+        color: color,
+        letterSpacing: 0.2,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+      ),
+    );
+  }
+
   getAppBar(context, title, fontSize, height) {
     return AppBar(
       // backgroundColor: const Color(0xFF4bb0a9).withOpacity(0.1),
@@ -82,7 +101,7 @@ class Util {
             );
           } else if (title == "Profile" ||
               title == "Chat History" ||
-              title == "Status" ||
+              title == "Transaction History" ||
               title == "Change Password") {
             Navigator.pushReplacement(
               context,
@@ -95,6 +114,13 @@ class Util {
               context,
               SlideLeftRoute(
                 page: ChatHistory(),
+              ),
+            );
+          }else if (title == "Transaction Details") {
+            Navigator.pushReplacement(
+              context,
+              SlideLeftRoute(
+                page: TransactionHistory(),
               ),
             );
           } else if (title == "Update Profile") {

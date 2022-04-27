@@ -85,8 +85,9 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
             onPressed: () {
               setState(() {
                 isSending = !isSending;
+                _getChatHistory();
               });
-              _getChatHistory();
+
             },
             child: Icon(
               Icons.refresh_outlined,
@@ -96,7 +97,7 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
             backgroundColor: Colors.teal,
             tooltip: 'Update Profile',
             elevation: 5,
-            splashColor: Colors.grey,
+
           ),
           // floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
 
@@ -114,7 +115,8 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _getChatList(context),
-              _replyCloseButton(),
+              // _getCard(),
+              issShowing ? _replyButton() : Container(),
               // issShowing ? _txtBoxButton() : Container()
             ],
           ),
@@ -125,39 +127,74 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
   }
 
   _getChatList(context) {
-    return Container(
-      child: Expanded(
-        child: ListView.builder(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            itemCount: widget.chatQuestionList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                title: Card(
-                    margin: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
-                    color: widget.chatQuestionList[index]['AnswerType']
-                        .toString() !=
-                        "2"
-                        ? const Color(0xFF91d0cc)
-                        : Colors.white60,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    elevation: 2.0,
-                    child: _chatListWidget(
-                        widget.chatQuestionList[index]['Answer'].toString(),
-                        widget.chatQuestionList[index]['Question'].toString(),
-                        widget.chatQuestionList[index]['AnswerTypeName']
-                            .toString(),
-                        widget.chatQuestionList[index]['AnswerType'].toString(),
-                        index)),
-              );
-            }),
-      ),
+    return Expanded(
+      child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: widget.chatQuestionList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ListTile(
+              title: Container(
+                constraints: BoxConstraints(
+                maxHeight: double.infinity,
+              ),
+                child: _getCard(
+                    widget.chatQuestionList[index]['Answer'].toString(),
+                    widget.chatQuestionList[index]['Question'].toString(),
+                    widget.chatQuestionList[index]['AnswerTypeName']
+                        .toString(),
+                    widget.chatQuestionList[index]['AnswerType'].toString(),
+                    index
+                ),
+              ),
+            );
+          }),
     );
     /*
     * {CanRply: 0, ChatCode: Out-011, ChatName: 15-03-2022, ChatQuestionList:
     * */
+  }
+
+  _getCard(answer, question, answerTypeName, answerType, index){
+    double fontSize = Util().getScreenHeight(context);
+    double height = Util().getScreenHeight(context);
+    double width = Util().getScreenWidth(context);
+    return Card(
+        color: widget.chatQuestionList[index]['AnswerType']
+            .toString() !=
+            "2"
+            ? const Color(0xFF91d0cc)
+            : Colors.white60,
+        semanticContainer: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        elevation: 2.0,
+      child: Container(
+        margin: const EdgeInsets.only(left: 0.0, top: 0.0, bottom: 0.0),
+        padding: const EdgeInsets.only(left: 10.0, top: 5.0, bottom: 2.0),
+        color: Colors.white60,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Util().getTextWithStyle1(
+              title: answerTypeName.toString(),
+              color: answerType == "2"
+                  ? Colors.blue.shade900
+                  : Colors.blue.shade600,
+              fontSize: height * 0.022,
+              fontWeight: FontWeight.bold,
+            ),
+            Column(
+              children: [
+                itemsRows("Q.", question, answerType),
+                itemsRows("A.", answer, answerType),
+              ],
+            ),
+          ],
+        ),
+      )
+    );
   }
 
   _chatListWidget(answer, question, answerTypeName, answerType, index) {
@@ -187,7 +224,8 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
                           ? Colors.blue.shade900
                           : Colors.blue.shade600,
                       fontSize: height * 0.022,
-                      fontWeight: FontWeight.bold),
+                      fontWeight: FontWeight.bold,
+                  ),
                   SizedBox(
                     height: 10.0,
                   ),
@@ -222,14 +260,18 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
       children: [
         Util().getTextWithStyle1(
             title: "$label : ",
-            color: Colors.blueGrey.shade700,
+            color: Colors.blueGrey.shade500,
             fontSize: fontSize * 0.02,
             fontWeight: FontWeight.w200),
-        Util().getTextWithStyle1(
-          title: value.toString(),
-          color: Colors.blueGrey.shade800,
-          fontSize: fontSize * 0.022,
-          fontWeight: FontWeight.w200,
+        Expanded(
+          child: Container(
+            child: Util().getTextWithStyle1(
+              title: value.toString(),
+              color: Colors.blueGrey.shade800,
+              fontSize: fontSize * 0.022,
+              fontWeight: FontWeight.w200,
+            ),
+          )
         )
       ],
     );
@@ -325,9 +367,9 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           issShowing ? _replyButton() : Container(),
-          SizedBox(
-            width: 10.0,
-          ),
+          // SizedBox(
+          //   width: 10.0,
+          // ),
           // isChatClosed ? _closeChatButton() : Container()
         ],
       ),
@@ -418,6 +460,7 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
             .isNotEmpty) {
           setState(() {
             isSending = !isSending;
+            Navigator.pop(context);
           });
           _sendChat();
         } else {
@@ -448,7 +491,7 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
         setState(() {
           _getChatHistory();
           issShowing = !issShowing;
-          Navigator.pop(context);
+          // Navigator.pop(context);
         });
         // setState(() {
         //   chatResponse = response;
@@ -502,7 +545,9 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
           widget.status = chatResponse['responseObject'][widget.index]['Status'].toString();
 
           print("chatResponse");
-          print(chatResponse);
+          // print(widget.chatQuestionList[widget.chatQuestionList.length]['AnswerTypeName'].toString());
+
+          _showTextBoxButton();
 
 
           isSending = !isSending;

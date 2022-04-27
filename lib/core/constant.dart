@@ -1,5 +1,6 @@
 class Constant {
   static const double padding =20;
+  static const String rupee = "₹";
 
   static const String APP_TITLE_NAME = "Counselinks";
 
@@ -89,6 +90,15 @@ class Constant {
   /*
   * 1 For Minor,2 for  Normal,3 For urgent
   * */
+  static const String API_SAVE_TRANSACTION_DETAIL = "SaveUpdateUserTransactionDetail";
+  /*
+  * {"objRequestUserTransactionDetail":{"UserTransactionDetailId": "0","PackageMasterId": "1","UserId": 3,"Amount": 2,"Discount":1,"FinalAmount":1,"InsertedUserID":0,"CustomerId":"CustomerId","RazorpayOrderId":"RazorpayOrderId","PaymentId":"","PaymentType":"","PaymentTypeDetail":"","ReceiptId":"","IsSuccess":"1","Remarks":""}}
+  * */
+  static const String API_GET_TRANSACTION_DETAIL = "GetUserTransactionDetail";
+  /*
+  * {"objRequestGetUserTransaction":{"UserId": 1}}
+  * */
+
   static const String CHAT_WEB_LINK = "https://counselinks.com/CounseLink/CouselinkChat/?AppAccessId=55&LanguageId=1&AppAccessTypeId=126";
 
 /*

@@ -40,9 +40,18 @@ class _PackageOrderSummaryState extends State<PackageOrderSummary> {
   var _razorpay = Razorpay();
   var userLoginResponse;
   dynamic userLoginData;
+  String userTransactionDetailId = "";
   String machineId = "";
   String userEmail = "";
   String userPassword = "";
+  String customerId = "";
+  String orderId = "";
+  String paymentId = "";
+  String transactionId = "";
+  String paymentType = "";
+  String paymentTypeDetail = "";
+  String receiptId = "";
+  String remarks = "";
 
   @override
   void initState() {
@@ -82,10 +91,15 @@ class _PackageOrderSummaryState extends State<PackageOrderSummary> {
     print(response.orderId);
     print(response.signature);
     print(response.paymentId);
+    setState(() {
+      orderId = response.orderId.toString();
+      paymentId = response.paymentId.toString();
+      // _paymentsDetails(paymentId);
+    });
     _capturePayments(response.paymentId);
     Util().displayToastMsg("Payment Successful");
 
-    _purchasePackageList(response.orderId, response.paymentId);
+    // _purchasePackageList(response.orderId, response.paymentId);
 
   }
 
@@ -93,7 +107,9 @@ class _PackageOrderSummaryState extends State<PackageOrderSummary> {
     // Do something when payment fails
     print("paymentfailed666");
     print(response.message);
+    print(response.code);
     Util().displayToastMsg("Payment failed");
+    // _finalSaveTransactionDetails();
     setState(() {
       isLoading = !isLoading;
     });
@@ -232,11 +248,12 @@ class _PackageOrderSummaryState extends State<PackageOrderSummary> {
       onPressed: () async {
         // _alertDialogWidget("order_bsdchfbcsdb", "payment_bsdchfbcsdb");
         if(total != 0){
-          _createCustomer();
-          _createOrder();
           setState(() {
             isLoading = !isLoading;
           });
+          _saveTransactionDetails();
+
+
         }else{
           _purchasePackageList("", "");
           // Util().displayToastMsg("Zero amount");
@@ -266,6 +283,9 @@ class _PackageOrderSummaryState extends State<PackageOrderSummary> {
         .razorPayApiCall(context, Constant.RAZOR_PAY_BASE_URL+Constant.API_CREATE_CUSTOMER,
         customerMap)
         .then((response) async {
+          setState(() {
+            customerId = response['id'].toString();
+          });
       print("value1324");
       print(response);
 
@@ -293,7 +313,6 @@ class _PackageOrderSummaryState extends State<PackageOrderSummary> {
       print(response);
       print(response['id']);
       _payOrder(response['id']);
-
     });
 
   }
@@ -336,6 +355,28 @@ class _PackageOrderSummaryState extends State<PackageOrderSummary> {
         .then((response) async {
       print("capture1324");
       print(response);
+      setState(() {
+        _paymentsDetails(paymentId);
+      });
+      // print(response['id']);
+      // _payOrder(response['id']);
+
+    });
+  }
+
+  _paymentsDetails(paymentId){
+    ServiceCall()
+        .razorPayGetApiCall(context, Constant.RAZOR_PAY_BASE_URL+Constant.API_PAYMENTS+"$paymentId")
+        .then((response) async {
+      print("paymentDetails1324");
+      print(response);
+      print("method : "+response["method"]);
+      setState(() {
+        paymentType = response["method"];
+        transactionId = response["method"] == 'upi' ? response["acquirer_data"]['rrn'].toString() : response["acquirer_data"]['bank_transaction_id'].toString();
+        remarks = response["description"];
+      });
+     _finalSaveTransactionDetails();
       // print(response['id']);
       // _payOrder(response['id']);
 
@@ -527,5 +568,87 @@ class _PackageOrderSummaryState extends State<PackageOrderSummary> {
   _removeUserData() async {
     print("11111");
     await SharedPrefData.removeUserLoginData(SharedPrefData.userLoginDataKey);
+  }
+
+  _saveTransactionDetails(){
+    int total = int.parse(widget.amount) - int.parse(widget.discount);
+    Map<String, dynamic> transactionMap = {
+      "objRequestUserTransactionDetail":{
+        "UserTransactionDetailId": "0",
+        "PackageMasterId": widget.packageMasterId,
+        "UserId": userLoginData['responseObject'][0]['UserId'],
+        "Amount": widget.amount,
+        "Discount":widget.discount,
+        "FinalAmount":total,
+        "InsertedUserID":0,
+      }
+    };
+
+    ServiceCall()
+        .apiCall(context, Constant.API_BASE_URL+Constant.API_SAVE_TRANSACTION_DETAIL,
+        transactionMap)
+        .then((response) async {
+      print("responseTransaction");
+      print(response);
+      if(response['responseCode'] == "1"){
+        setState(() {
+          _createCustomer();
+          _createOrder();
+          userTransactionDetailId = response['responseObject']['UserTransactionDetailId'].toString();
+        });
+      }else{
+        Util().displayToastMsg(response['responseMessage'].toString());
+        setState(() {
+          isLoading = !isLoading;
+        });
+      }
+
+    });
+  }
+
+  _finalSaveTransactionDetails(){
+    int total = int.parse(widget.amount) - int.parse(widget.discount);
+    Map<String, dynamic> transactionMap = {
+      "objRequestUserTransactionDetail":{
+        "UserTransactionDetailId": userTransactionDetailId,
+        "PackageMasterId": widget.packageMasterId,
+        "UserId": userLoginData['responseObject'][0]['UserId'],
+        "Amount": widget.amount,
+        "Discount":widget.discount,
+        "FinalAmount":total,
+        "InsertedUserID":0,
+        "CustomerId":customerId,
+        "RazorpayOrderId":orderId,
+        "PaymentId":paymentId,
+        "PaymentType":paymentType,
+        "PaymentTypeDetail":paymentTypeDetail,
+        "ReceiptId":receiptId,
+        "IsSuccess":"1",
+        "Remarks":remarks,
+        "BankTransactionNo": transactionId
+      }
+    };
+
+    ServiceCall()
+        .apiCall(context, Constant.API_BASE_URL+Constant.API_SAVE_TRANSACTION_DETAIL,
+        transactionMap)
+        .then((response) async {
+      print("tansactionDetail");
+      print(response);
+      if(response["responseCode"] == "1"){
+        setState(() {
+          _updateUserDetail(orderId, paymentId);
+          // _alertDialogWidget(orderId, paymentId);
+          // isLoading = !isLoading;
+        });
+      }else{
+        Util().displayToastMsg(response["responseMessage"]);
+        setState(() {
+          isLoading = !isLoading;
+        });
+      }
+      
+
+    });
   }
 }
