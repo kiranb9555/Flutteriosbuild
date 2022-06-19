@@ -17,7 +17,7 @@ class UserLoginResponseObject {
   Null? machineId;
   String? mobileNo1;
   String? name;
-  int? noOfChat;
+  String? noOfChat;
   Null? oldPassword;
   String? packageTime;
   Null? password;

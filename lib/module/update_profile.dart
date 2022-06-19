@@ -188,7 +188,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                     height: height * 0.06,
                   ),
                   _address2Field("Enter Address Line 2...", "Address Line 2",
-                      width1),
+                      width1, addressLine2Controller),
                   SizedBox(
                     height: height * 0.06,
                   ),
@@ -265,7 +265,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
     );
   }
 
-  _address2Field(String hintText, String labelText, double width,
+  _address2Field(String hintText, String labelText, double width, TextEditingController controller
      ) {
     double fontSize = Util().getScreenHeight(context);
     return Container(
@@ -274,6 +274,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
         cursorColor: Colors.blueGrey.shade900,
         cursorHeight: 20.0,
+        controller: controller,
         style: TextStyle(
           color: Colors.blueGrey.shade600,
           fontSize: fontSize * 0.022,
@@ -652,7 +653,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
       }
     };
 
-    print("detailMap124");
+    print("detailMap124"); //75459 33818, 4 :30 , 700  10   ,, 94319 76729, 85399 48322 7061809328,
+    // 7004021983
     print(detailMap);
     ServiceCall()
         .apiCall(context, Constant.API_BASE_URL + Constant.API_SIGNUP_OUTSIDE,

@@ -178,7 +178,7 @@ class _ChatDetailHistoryState extends State<ChatDetailHistory> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Util().getTextWithStyle1(
-              title: answerTypeName.toString(),
+              title: answerTypeName.toString() == "User" ? answerTypeName.toString().replaceAll("User", "Me") : answerTypeName.toString(),
               color: answerType == "2"
                   ? Colors.blue.shade900
                   : Colors.blue.shade600,

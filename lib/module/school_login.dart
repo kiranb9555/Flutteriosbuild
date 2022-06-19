@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:Counselinks/module/school_code_verify.dart';
 import 'package:Counselinks/shared/slide_left_route.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -6,11 +10,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../core/constant.dart';
 import '../core/service_call.dart';
 import '../core/util.dart';
+import '../database/shared_pred_data.dart';
+import '../model/user_login_response.dart';
 import '../shared/slide_right_route.dart';
+import 'home.dart';
 import 'signin.dart';
 
 class SchoolLogin extends StatefulWidget {
-  const SchoolLogin({Key? key}) : super(key: key);
+  dynamic schoolCodeResponse;
+  String schoolCode = '';
+
+  SchoolLogin(this.schoolCodeResponse, this.schoolCode , {Key? key}) : super(key: key);
 
   @override
   State<SchoolLogin> createState() => _SchoolLoginState();
@@ -22,10 +32,36 @@ class _SchoolLoginState extends State<SchoolLogin> {
   TextEditingController schoolCodeController = TextEditingController();
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController machineIdController = TextEditingController();
   bool isSavingData = false;
   bool isCodeVerifying = false;
   bool isSchoolCodeVerified = false;
-  var schoolCodeResponse ;
+
+  @override
+  void initState() {
+    getDeviceTokenToSendNotification();
+    _getFilledData();
+    super.initState();
+  }
+
+  Future<void> getDeviceTokenToSendNotification() async {
+    final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+    final token = await _fcm.getToken();
+    // deviceTokenToSendPushNotification = token.toString();
+    print("Token Value ${token.toString()}");
+    setState(() {
+      machineIdController.text = token.toString();
+      print("machine Id");
+      print(machineIdController.text.length);
+    });
+  }
+
+
+  _getFilledData(){
+    print("schoolCode");
+    print(widget.schoolCode.toString());
+    schoolCodeController.text = widget.schoolCode.toString().toUpperCase();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,88 +83,11 @@ class _SchoolLoginState extends State<SchoolLogin> {
           decoration: Util().boxDecoration(),
           child: Scaffold(
             backgroundColor: Colors.transparent,
-            body: isSchoolCodeVerified ? _schoolLoginBody() : _schoolCodeBody(),
+            body: _schoolLoginBody(),
           ),
         ),
       ),
     );
-  }
-/*
-* School code verification
-* */
-  _schoolCodeBody() {
-    double height = Util().getScreenHeight(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      // decoration: Util().boxDecoration(),
-      child: Container(
-        alignment: Alignment.center,
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _detailForm(
-                    "Enter School Code...", "School Code", codeController),
-                SizedBox(
-                  height: height * 0.06,
-                ),
-                !isCodeVerifying ? _schoolCodeButton() : Util().loadIndicator(),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  _schoolCodeButton() {
-    double fontSize = Util().getScreenHeight(context);
-    return ElevatedButton(
-      child: Util().getTextWithStyle1(
-          title: "Next".toUpperCase(),
-          color: Colors.grey.shade900,
-          fontSize: fontSize * 0.02,
-          fontWeight: FontWeight.w700,
-      ),
-      style: Util().buttonStyle(
-          foregroundColor: Colors.white,
-          backgroundColor: const Color(0xFF91d0cc).withOpacity(0.9),
-          borderColor: const Color(0xFF91d0cc).withOpacity(0.7),
-          borderRadius: 18.0),
-      onPressed: () async {
-        // String email = await SharedPrefData.getUserEmail();
-        if (_formKey.currentState!.validate()) {
-          setState(() {
-            isCodeVerifying = !isCodeVerifying;
-          });
-          _getCompanyInfo(codeController.text);
-        }
-      },
-    );
-  }
-
-  _getCompanyInfo(schoolCode) {
-    Map<String, dynamic> schoolMap = {
-      "objRequestCompanyBasicInfo": {
-        "CompanyCode": schoolCode.toString().toUpperCase(),
-      }
-    };
-
-    ServiceCall()
-        .apiCall(context, Constant.API_BASE_URL + Constant.API_COMPANY_INFO,
-        schoolMap)
-        .then((response) {
-
-      if (response['responseCode'] == "1") {
-        setState(() {
-          schoolCodeResponse = response;
-          isCodeVerifying = !isCodeVerifying;
-          isSchoolCodeVerified = !isSchoolCodeVerified;
-        });
-      }
-    });
   }
 
   /*School Login Code*/
@@ -186,8 +145,10 @@ class _SchoolLoginState extends State<SchoolLogin> {
   }
 
   _getLogo(height, width) {
+    print("imageUrl");
+    print(widget.schoolCodeResponse['responseObject'][0]['CompanyLogo'].toString());
     return CachedNetworkImage(
-      imageUrl: schoolCodeResponse['responseObject'][0]['CompanyLogo'].toString(),
+      imageUrl: widget.schoolCodeResponse['responseObject'][0]['CompanyLogo'].toString(),
       placeholder: (context, url) => new CircularProgressIndicator(),
       errorWidget: (context, url, error) => new Icon(Icons.error),
     );
@@ -207,6 +168,7 @@ class _SchoolLoginState extends State<SchoolLogin> {
       cursorColor: Colors.blueGrey.shade900,
       cursorHeight: 20.0,
       obscureText: labelText == "Password" ? true : false,
+      readOnly: _readOnly(labelText),
       style: TextStyle(
         color: Colors.blueGrey,
         fontSize: fontSize * 0.022,
@@ -216,6 +178,13 @@ class _SchoolLoginState extends State<SchoolLogin> {
   }
 
 
+  _readOnly(labelText){
+    if (labelText == 'School Code') {
+      return true;
+    }else {
+      return false;
+    }
+  }
   _schoolLoginButton() {
     double fontSize = Util().getScreenHeight(context);
     return ElevatedButton(
@@ -245,8 +214,6 @@ class _SchoolLoginState extends State<SchoolLogin> {
     );
   }
 
-
-
   _signIn() {
     double fontSize = Util().getScreenHeight(context);
     return InkWell(
@@ -260,7 +227,7 @@ class _SchoolLoginState extends State<SchoolLogin> {
           Navigator.pushReplacement(
             context,
             SlideLeftRoute(
-              page: SignIn(),
+              page: SchoolCodeVerify(),
             ),
           );
         },
@@ -268,7 +235,7 @@ class _SchoolLoginState extends State<SchoolLogin> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Util().getTextWithStyle(
-                title: "Sign In",
+                title: "Back",
                 color: Colors.grey.shade900,
                 fontSize: fontSize * 0.018,
                 fontWeight: FontWeight.w500),
@@ -278,8 +245,8 @@ class _SchoolLoginState extends State<SchoolLogin> {
 
   _getSchoolLogIn() async {
     Map<String, dynamic> schoolLoginMap = {
-      "objReqSchoolUserLogin":{
-        "MachineId":1,
+      "objReqSchoolUserLogin": {
+        "MachineId": machineIdController.text.toString(),
         "Password": passwordController.text.toString(),
         "UserName": userNameController.text.toString(),
         "CompanyCode": schoolCodeController.text.toString()
@@ -295,25 +262,35 @@ class _SchoolLoginState extends State<SchoolLogin> {
     * */
     ServiceCall()
         .apiCall(
-            context, Constant.API_BASE_URL + Constant.API_LOGIN_SCHOOL, schoolLoginMap)
+        context, Constant.API_BASE_URL + Constant.API_LOGIN_SCHOOL,
+        schoolLoginMap)
         .then((response) async {
       print("response555");
       print(response);
       if (response["responseCode"] == "1") {
-        print("schoolLoginMap");
-        print(schoolLoginMap);
-        setState(() {
-          isSavingData = !isSavingData;
-        });
-      } else if (response["responseCode"] == "0") {
+        UserLoginResponse userLoginResponse =
+        UserLoginResponse.fromJson(response);
+        String userData = jsonEncode(userLoginResponse);
+        SharedPrefData.setUserLoginData(userData);
+        Util().displayToastMsg(response["responseMessage"]);
+
+        SharedPrefData.setUserLoggedIn(true);
+        SharedPrefData.setUserEmail(userNameController.text.toString());
+        SharedPrefData.setUserPassword(passwordController.text.toString());
+        SharedPrefData.setMachineID(machineIdController.text.toString());
 
         setState(() {
           isSavingData = !isSavingData;
         });
-        print("response333");
-        print(response);
+
+        Navigator.pushReplacement(
+          context,
+          SlideRightRoute(
+            page: Home(),
+          ),
+        );
+      } else {
         Util().displayToastMsg(response["responseMessage"]);
-      }else{
         setState(() {
           isSavingData = !isSavingData;
         });

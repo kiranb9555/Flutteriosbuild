@@ -289,51 +289,53 @@ class _ChatHistoryState extends State<ChatHistory> {
   }
 
   _getChatList(context) {
-    return ListView.builder(
-        shrinkWrap: true,
-        itemCount: chatResponse['responseObject'].length,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            onTap: () {
-              setState(() {
-                Navigator.pushReplacement(
-                  context,
-                  SlideRightRoute(
-                    page: ChatDetailHistory(
-                      chatQuestionList: chatResponse['responseObject'][index]
+    return Expanded(
+      child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: chatResponse['responseObject'].length,
+          itemBuilder: (BuildContext context, int index) {
+            return ListTile(
+              onTap: () {
+                setState(() {
+                  Navigator.pushReplacement(
+                    context,
+                    SlideRightRoute(
+                      page: ChatDetailHistory(
+                          chatQuestionList: chatResponse['responseObject'][index]
                           ['ChatQuestionList'],
-                      status : chatResponse['responseObject'][index]['Status'].toString(),
-                      userChatId : chatResponse['responseObject'][index]['UserChatId'].toString(),
-                      userId : userLoginData['responseObject'][0]['UserId'].toString(),
-                      appAccessTypeId : userLoginData['responseObject'][0]['AppAccessTypeId'].toString(),
-                      fromDate : fromDateController.text.toString(),
-                      toDate : toDateController.text.toString(),
-                        index : index
+                          status : chatResponse['responseObject'][index]['Status'].toString(),
+                          userChatId : chatResponse['responseObject'][index]['UserChatId'].toString(),
+                          userId : userLoginData['responseObject'][0]['UserId'].toString(),
+                          appAccessTypeId : userLoginData['responseObject'][0]['AppAccessTypeId'].toString(),
+                          fromDate : fromDateController.text.toString(),
+                          toDate : toDateController.text.toString(),
+                          index : index
+                      ),
                     ),
+                  );
+                  // isDownLoading = !isDownLoading;
+                  // _purchasePackageList(index);
+                  // isLoading = !isLoading;
+                });
+              },
+              title: Card(
+                  margin: const EdgeInsets.only(top: 5.0),
+                  color: const Color(0xFF91d0cc),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
                   ),
-                );
-                // isDownLoading = !isDownLoading;
-                // _purchasePackageList(index);
-                // isLoading = !isLoading;
-              });
-            },
-            title: Card(
-                margin: const EdgeInsets.only(top: 5.0),
-                color: const Color(0xFF91d0cc),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-                elevation: 2.0,
-                child: _chatListWidget(
-                    chatResponse['responseObject'][index]['ChatName']
-                        .toString(),
-                    chatResponse['responseObject'][index]['StatusName'].toString(),
-                    chatResponse['responseObject'][index]['GroupName']
-                        .toString(),
-                    chatResponse['responseObject'][index]['ChatQuestionList'],
-                    index)),
-          );
-        });
+                  elevation: 2.0,
+                  child: _chatListWidget(
+                      chatResponse['responseObject'][index]['ChatName']
+                          .toString(),
+                      chatResponse['responseObject'][index]['StatusName'].toString(),
+                      chatResponse['responseObject'][index]['GroupName']
+                          .toString(),
+                      chatResponse['responseObject'][index]['ChatQuestionList'],
+                      index)),
+            );
+          }),
+    );
     /*
     * {CanRply: 0, ChatCode: Out-011, ChatName: 15-03-2022, ChatQuestionList:
     * */

@@ -62,7 +62,7 @@ class _ProfileState extends State<Profile> {
           backgroundColor: Colors.transparent,
           appBar: Util().getAppBar(context, 'Profile', fontSize, height),
           // bottomNavigationBar: BottomNavigationWidget(2),
-          floatingActionButton: FloatingActionButton(
+          floatingActionButton: userLoginData['responseObject'][0]['AppAccessTypeId'] != 123 ? FloatingActionButton(
             onPressed: () {
               Navigator.pushReplacement(
                 context,
@@ -80,7 +80,7 @@ class _ProfileState extends State<Profile> {
             tooltip: 'Update Profile',
             elevation: 5,
             splashColor: Colors.grey,
-          ),
+          ) : Container(),
           floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
 
           body: _body(),

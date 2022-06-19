@@ -17,6 +17,7 @@ import '../core/util.dart';
 import '../database/shared_pred_data.dart';
 import '../shared/slide_left_route.dart';
 import '../shared/slide_right_route.dart';
+import 'school_code_verify.dart';
 import 'signup.dart';
 
 class SignIn extends StatefulWidget {
@@ -428,7 +429,7 @@ class _SignInState extends State<SignIn> {
           Navigator.pushReplacement(
             context,
             SlideLeftRoute(
-              page: SchoolLogin(),
+              page: SchoolCodeVerify(),
             ),
           );
         },

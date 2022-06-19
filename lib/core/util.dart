@@ -102,6 +102,7 @@ class Util {
           } else if (title == "Profile" ||
               title == "Chat History" ||
               title == "Transaction History" ||
+              title == "Package List" ||
               title == "Change Password") {
             Navigator.pushReplacement(
               context,

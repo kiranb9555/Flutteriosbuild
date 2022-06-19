@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "323730157333",
-    "project_id": "counselinks-66e22",
-    "storage_bucket": "counselinks-66e22.appspot.com"
+    "project_number": "655239822641",
+    "project_id": "counselinks-17e57",
+    "storage_bucket": "counselinks-17e57.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:323730157333:android:594c669261b12a1191031c",
+        "mobilesdk_app_id": "1:655239822641:android:eaefa6c279776c2242c410",
         "android_client_info": {
           "package_name": "com.counselink.counselink"
         }
       },
       "oauth_client": [
         {
-          "client_id": "323730157333-0lso8qnq100740f00ds45vcg4o6bn7kb.apps.googleusercontent.com",
+          "client_id": "655239822641-3u3l3v86461sqpf4ptfoqvfa649008nu.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA303D5QVR8uaz6Zgx5EwKqWorpHSQ3rbQ"
+          "current_key": "AIzaSyCTV40Z0WngDtEB6pHBinaVS476jW7qbok"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "323730157333-0lso8qnq100740f00ds45vcg4o6bn7kb.apps.googleusercontent.com",
+              "client_id": "655239822641-3u3l3v86461sqpf4ptfoqvfa649008nu.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

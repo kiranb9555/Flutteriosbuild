@@ -8,8 +8,10 @@ import 'package:flutter/widgets.dart';
 import '../core/constant.dart';
 import '../core/service_call.dart';
 import '../core/util.dart';
+import '../shared/slide_left_route.dart';
 import '../shared/slide_right_route.dart';
 import '../shell/package_order_summary.dart';
+import 'more.dart';
 
 class PackageList extends StatefulWidget {
 
@@ -58,15 +60,26 @@ class _PackageListState extends State<PackageList> {
     double fontSize = Util().getScreenHeight(context);
     return Container(
       decoration: Util().boxDecoration(),
-      child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: Util().getAppBar(context, "Package List", fontSize, height),
-          body: Stack(
-            children: [
-              _body(height),
-              isDownLoading ? Util().loadIndicator() : Container(),
-            ],
-          )),
+      child: WillPopScope(
+        onWillPop: ()async{
+          Navigator.pushReplacement(
+            context,
+            SlideLeftRoute(
+              page: More(),
+            ),
+          );
+          return false;
+        },
+        child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: Util().getAppBar(context, "Package List", fontSize, height),
+            body: Stack(
+              children: [
+                _body(height),
+                isDownLoading ? Util().loadIndicator() : Container(),
+              ],
+            )),
+      ),
     );
   }
 

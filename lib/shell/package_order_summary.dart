@@ -384,13 +384,16 @@ class _PackageOrderSummaryState extends State<PackageOrderSummary> {
   }
 
   _alertDialogWidget(orderId, purchaseID) {
+    int total = int.parse(widget.amount) - int.parse(widget.discount);
+    print("total1324");
+    print(total);
     return showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return _openDialog(
           context,
-          'Payment Successful !!!',
+          total == 0 ? "Package is added !!!" : 'Payment Successful !!!',
           orderId.isNotEmpty ? 'OrderId : $orderId' : "",
           "OK",
         );
@@ -434,11 +437,13 @@ class _PackageOrderSummaryState extends State<PackageOrderSummary> {
                   fontWeight: FontWeight.w500,
               ),
 
-              Util().getTextWithStyle1(
-                title: description,
-                color: Colors.blueGrey.shade800,
-                fontSize: width * 0.05,
-                fontWeight: FontWeight.w500,
+              Expanded(
+                child: Util().getTextWithStyle1(
+                  title: description,
+                  color: Colors.blueGrey.shade800,
+                  fontSize: width * 0.045,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
 
 
