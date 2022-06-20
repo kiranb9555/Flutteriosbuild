@@ -37,4 +37,4 @@ workflows:
         recipients:
           - lucky33abhishek@gmail.com
 #      scripts:
-#        - echo 'Post-publish script'
+#        - echo 'Post-publish script' Host: 199.7.162.132 Port: 17490 Username: builder Password: cFhpyDC7
