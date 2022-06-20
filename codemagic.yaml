@@ -28,13 +28,13 @@ workflows:
       - name: Flutter test
         script: flutter test
         ignore_failure: true
-      - name: Build for iOS
-        script: flutter build ios
+      # - name: Build for iOS
+      #   script: flutter build ios
     artifacts:
       - build/**/outputs/bundle/**/*.aab
     publishing:
       email:
         recipients:
           - lucky33abhishek@gmail.com
-      scripts:
-        - echo 'Post-publish script'
+#      scripts:
+#        - echo 'Post-publish script'
