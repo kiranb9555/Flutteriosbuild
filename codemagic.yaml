@@ -1,0 +1,40 @@
+workflows:
+  my-workflow:
+    name: Counselinks
+    instance_type: mac_mini
+    max_build_duration: 60
+    environment:
+      groups:
+        - group_name
+      vars:
+        PUBLIC_ENV_VAR: "value here"
+      flutter: stable
+      xcode: latest
+    cache:
+      cache_paths:
+        - ~/.pub-cache
+    triggering:
+      events:
+        - push
+        - pull_request
+        - tag
+      branch_patterns:
+        - pattern: '*'
+          include: true
+          source: true
+      cancel_previous_builds: false
+    scripts:
+      - echo "single line script"
+      - name: Flutter test
+        script: flutter test
+        ignore_failure: true
+      - name: Build for iOS
+        script: flutter build ios
+    artifacts:
+      - build/**/outputs/bundle/**/*.aab
+    publishing:
+      email:
+        recipients:
+          - lucky33abhishek@gmail.com
+      scripts:
+        - echo 'Post-publish script'
